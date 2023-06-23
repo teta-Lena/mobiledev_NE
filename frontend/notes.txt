@@ -1,0 +1,200 @@
+          {/* <Login navigation={navigation} /> */}
+
+
+
+import React from "react";
+import { ScrollView, View, Text, TextInput, StyleSheet } from "react-native";
+import { Button } from "react-native-elements";
+import { Formik } from "formik";
+import * as yup from "yup";
+
+const validRegister = yup.object().shape({
+  fullnames: yup.string().required().min(2),
+  lastname: yup.string().required().min(2),
+  phone: yup.string().required(),
+  email: yup.string().email("Please enter valid email").required(),
+  password: yup
+    .string()
+    .required()
+    .min(8, ({ min }) => `Password must be atleast ${min} characters`)
+    .max(32),
+});
+const RegisterScreen = () => {
+  return (
+    <View className="h-full bg-[#1a3788]">
+      <Formik
+        validationSchema={validRegister}
+        initialValues={{
+          firstname: "",
+          lastname: "",
+          email: "",
+          phone: "",
+          password: "",
+        }}
+        onSubmit={(values) => console.log(values)}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          touched,
+          values,
+          errors,
+        }) => (
+          <>
+            <ScrollView className="container mt-28 w-full bg-white rounded-t-3xl">
+              <View className="items-center">
+                <Text className="text-xl font-bold mt-2">Sign up</Text>
+                <Text className="text-gray-400 mt-1">
+                  Fill in the fields to create your account..
+                </Text>
+              </View>
+              <View className="mt-8">
+                <View className="mt-2 w-full h-full">
+                  <View className=" items-center w-full my-1">
+                    <TextInput
+                      name="firstname"
+                      value={values.firstname}
+                      onBlur={handleBlur("firstname")}
+                      onChange={handleChange("firstname")}
+                      placeholder="Enter your first name"
+                      className="rounded border-2 border-gray-200  py-2 text-left px-4 w-[90%]"
+                    />
+                    {errors.firstname && touched.firstname && (
+                      <Text className="text-red-700">{errors.firstname}</Text>
+                    )}
+                  </View>
+                  <View className="items-center w-full  my-1">
+                    <TextInput
+                      name="lastname"
+                      value={values.lastname}
+                      onBlur={handleBlur("lastname")}
+                      onChange={handleChange("lastname")}
+                      placeholder="Enter your last name"
+                      className="rounded border-2 border-gray-200 py-2 text-left px-4 w-[90%]"
+                    />
+                    {errors.lastname && touched.lastname && (
+                      <Text className="text-red-700">{errors.lastname}</Text>
+                    )}
+                  </View>
+                  <View className="items-center w-full  my-1">
+                    <TextInput
+                      name="email"
+                      onBlur={handleBlur("email")}
+                      value={values.email}
+                      onChange={handleChange("email")}
+                      placeholder="Enter your email"
+                      className="rounded border-2 border-gray-200 py-2 text-left px-4 w-[90%]"
+                    />
+                    {errors.email && touched.email && (
+                      <Text className="text-red-700">{errors.email}</Text>
+                    )}
+                  </View>
+                  <View className="items-center w-full  my-1">
+                    <TextInput
+                      name="phone"
+                      value={values.phone}
+                      onBlur={handleBlur("phone")}
+                      onChange={handleChange("phone")}
+                      placeholder="Enter your phone"
+                      className="rounded border-2 border-gray-200 py-2 text-left px-4 w-[90%]"
+                    />
+                    {errors.phone && touched.phone && (
+                      <Text className="text-red-700">{errors.phone}</Text>
+                    )}
+                  </View>
+                  <View className="items-center w-full  my-1">
+                    <TextInput
+                      onBlur={handleBlur("password")}
+                      onChange={handleChange("password")}
+                      name="password"
+                      value={values.password}
+                      secureTextEntry
+                      placeholder="Enter your password"
+                      className="rounded border-2 border-gray-200 py-2 text-left px-4 w-[90%]"
+                    />
+                    {errors.password && touched.password && (
+                      <Text className="text-red-700">{errors.password}</Text>
+                    )}
+                  </View>
+                  <View className="mx-4 my-5 h-full">
+                    <Button
+                      title="Sign up"
+                      buttonStyle={style.btn}
+                      onPress={handleSubmit}
+                    />
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
+          </>
+        )}
+      </Formik>
+    </View>
+  );
+};
+
+const style = StyleSheet.create({
+  btn: {
+    backgroundColor: "#1a3788",
+  },
+  gbtn: {
+    backgroundColor: "red",
+  },
+});
+
+
+export default RegisterScreen;
+
+
+react-native-image-picker
+npx pod-install
+
+       <TouchableOpacity
+                  style={styles.photoButton}
+                  onPress={() => {
+                    ImagePicker.showImagePicker(
+                      { title: 'Select Photo' }, (response) => {
+                        if (response.uri) setFieldValue('photo', response)
+                        setFieldTouched('photo', true)
+                    })
+                  }}
+                >
+                  <Text>Add Image</Text>
+                </TouchableOpacity>
+                       {values.photo &&
+                  <Text>{`...${values.photo.fileName.substr(values.photo.fileName.length - 10)}`}</Text>
+                }
+
+                {(errors.photo && touched.photo) &&
+                  <Text style={{ color: 'red' }}>{errors.photo}</Text>
+                }
+
+
+password regex 
+
+  .matches(/\w*[a-z]\w*/, "Password must have a small letter")
+    .matches(/\w*[A-Z]\w*/, "Password must have a capital letter")
+    .matches(/\d/, "Password must have a number")
+    .matches(
+      /[!@#$%^&*()\-_"=+{}; :,<.>]/,
+      "Password must have a special character"
+    )
+
+
+    //add confirmPassword REGEX
+// confirmPassword: yup
+// .string()
+// .oneOf([yup.ref('password')], 'Passwords do not match')
+// .required('Confirm password is required'),
+// })
+
+            Toast.show({
+              type: "Error",
+              text1: "Email address is already in use!",
+              // text2: e,
+              visibilityTime: 2000, // Duration of the toast message
+              autoHide: true,
+              topOffset: 30,
+              bottomOffset: 40,
+            });

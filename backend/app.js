@@ -5,7 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 dotenv.config();
 const { DB_URL } = process.env;
-// const routes = require("./routes/index");
+const routes = require("./routes/index");
 const app = express();
 
 // Parse JSON bodies
@@ -21,7 +21,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("Failed to connect to MongoDB", error));
 
-// app.use("/api/v1/", routes);
+app.use("/api/v1/", routes);
 
 // Start the server
 // app.listen(3000, () => {
