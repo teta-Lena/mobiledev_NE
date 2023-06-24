@@ -9,19 +9,28 @@ import {
 import { Button, Icon } from "react-native-elements";
 import { Formik } from "formik";
 import * as yup from "yup";
-import * as SecureStore from "expo-secure-store";
 import API_URL from "../utils/requestHandling";
 
 const validTokenGeneration = yup.object().shape({
-  amount: yup.number().required("Enter your amount"),
-  meter_number: yup
-    .string("Meter number should be a string")
-    .required("Enter the meter number"),
+  amount: yup
+    .number("Enter a valid value e.g:4000")
+    .required("Enter your amount")
+    .max(182500, "Amount is too large for a token"),
+  meterNumber: yup
+    .number()
+    .required("Enter the meter number")
+    .test(
+      "length",
+      "Meter number length must be equal to six",
+      (value) => String(value).length === 6
+    ),
 });
 
 const TokenGeneration = ({ navigation }) => {
   const [error, setError] = useState("");
   const [isLoading, setisLoading] = useState(false);
+  const [token, setToken] = useState("");
+  const [success, setSuccess] = useState("");
   return (
     <View>
       <View className="h-full bg-[#1a3788]">
@@ -29,40 +38,32 @@ const TokenGeneration = ({ navigation }) => {
           validationSchema={validTokenGeneration}
           initialValues={{
             amount: "",
-            meter_number: "",
+            meterNumber: "",
           }}
           onSubmit={async (values) => {
             try {
               setisLoading(true);
-              const res = await fetch(`${API_URL}/api/v1/u/login`, {
+
+              const res = await fetch(`${API_URL}/api/tokens/generate-token`, {
                 method: "POST",
                 body: JSON.stringify(values),
                 headers: {
-                  "Content-Type": "application/json", // Set the content type header
+                  "Content-Type": "application/json",
                 },
               });
 
               const result = await res.json();
+              console.log(result);
 
               if (result.error) {
                 setisLoading(false);
                 console.log("Error");
                 setError(result.error);
-                return;
+                return error;
               } else {
-                if (result.user.role != "voter") {
-                  setError("You are not allowed to use our app");
-                  // navigation.navigate("Welcome")
-                  setisLoading(false);
-                  return error;
-                }
-                await SecureStore.setItemAsync("token", result.token);
                 setisLoading(false);
-                const user = JSON.stringify(values);
-                navigation.navigate("Dashboard", {
-                  token: result.token,
-                  user: result.user,
-                });
+                setToken(result.purchasedToken);
+                navigation.navigate("ValidateToken");
               }
             } catch (e) {
               console.log(e);
@@ -82,9 +83,9 @@ const TokenGeneration = ({ navigation }) => {
             <>
               <View className="container mt-28 h-full w-full bg-white rounded-t-3xl">
                 <View className="items-center">
-                  <Text className="text-xl font-bold mt-2">Login</Text>
+                  <Text className="text-xl font-bold mt-2">Generate Token</Text>
                   <Text className="text-gray-400 mt-1">
-                    Sign in to continue...
+                    Enter valid values to generate your token
                   </Text>
                 </View>
                 <View className="mt-8">
@@ -105,25 +106,27 @@ const TokenGeneration = ({ navigation }) => {
 
                     <View className="items-center w-full  my-1">
                       <TextInput
-                        onBlur={handleBlur("meter_number")}
-                        onChangeText={handleChange("meter_number")}
-                        name="meter_number"
-                        value={values.meter_number}
+                        onBlur={handleBlur("meterNumber")}
+                        onChangeText={handleChange("meterNumber")}
+                        name="meterNumber"
+                        value={values.meterNumber}
                         placeholder="Enter your meter number"
                         className="rounded border-2 border-gray-200 py-2 text-left px-4 w-[90%]"
                       />
-                      {errors.meter_number && touched.meter_number && (
+                      {errors.meterNumber && touched.meterNumber && (
                         <Text className="text-red-700">
-                          {errors.meter_number}
+                          {errors.meterNumber?.message}
                         </Text>
                       )}
                     </View>
 
                     <View>
-                      {error && (
+                      {error ? (
                         <Text className="text-red-500 mt-2 mx-5 capitalize">
                           {error}
                         </Text>
+                      ) : (
+                        <View></View>
                       )}
                     </View>
 
@@ -133,23 +136,13 @@ const TokenGeneration = ({ navigation }) => {
                           isLoading ? (
                             <ActivityIndicator color={"#fff"} />
                           ) : (
-                            "Log in"
+                            "GenerateToken"
                           )
                         }
                         buttonStyle={style.btn}
                         onPress={handleSubmit}
                         disabled={!isValid}
                       />
-                    </View>
-
-                    <View className="flex-row justify-center my-4">
-                      <Text> Don't have an account ....</Text>
-                      <Text
-                        className="text-blue-800"
-                        onPress={() => navigation.navigate("Register")}
-                      >
-                        Register
-                      </Text>
                     </View>
                   </View>
                 </View>

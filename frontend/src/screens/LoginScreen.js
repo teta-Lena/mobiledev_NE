@@ -77,15 +77,17 @@ const LoginScreen = ({ navigation }) => {
             values,
             errors,
             isValid,
+            resetForm,
           }) => (
             <>
-              <View className="container mt-28 h-full w-full bg-white rounded-t-3xl">
+              <View className="container mt-40 h-full w-full bg-white rounded-t-3xl">
                 <View className="items-center">
-                  <Text className="text-xl font-bold mt-2">Login</Text>
+                  <Text className="text-xl font-bold mt-10">Login</Text>
                   <Text className="text-gray-400 mt-1">
                     Sign in to continue...
                   </Text>
                 </View>
+
                 <View className="mt-8">
                   <View className="mt-2 w-full h-full">
                     <View className="items-center w-full  my-1">

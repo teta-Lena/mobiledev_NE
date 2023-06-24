@@ -6,6 +6,10 @@ import axios from "axios";
 const Dashboard = ({ navigation }) => {
   const token = navigation.getParam("token");
   const user = navigation.getParam("user");
+  const handleLogout = async (e) => {
+    await SecureStore.deleteItemAsync("token");
+    navigation.navigate("Login");
+  };
   return (
     <View className="my-auto">
       <Text className=" text-center font-bold text-xl">
@@ -24,6 +28,11 @@ const Dashboard = ({ navigation }) => {
         <Button
           title="Generate New Token"
           onPress={() => navigation.navigate("GenerateToken")}
+          buttonStyle={styles.btn}
+        />
+        <Button
+          title="Logout"
+          onPress={handleLogout}
           buttonStyle={styles.btn}
         />
       </View>

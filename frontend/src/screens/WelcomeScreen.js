@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 const WelcomeScreen = ({ navigation }) => {
   const onSwipeRight = () => {
-    navigation.navigate("Login");
+    navigation.navigate("GenerateToken");
   };
   return (
     <PanGestureHandler onGestureEvent={onSwipeRight}>
